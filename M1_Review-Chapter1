@@ -18,6 +18,9 @@ OS: between hardware and other software
     \-> restrict hardware access, manage hardware resources
     \-> hardware--
     
+How do we use OS?
+  \-> through OS interfaces
+
 Why do we need OS?
   \-> Control and Coordinate
     \-> allows a\many program to use computer properly, eg. program execution, error detections, resource allocation...
