@@ -1,0 +1,174 @@
+# CSC360
+Operating Systems
+
+Midterm #1 review.
+
+Processes - Chapter 3
+
+    Process:
+        \-> a program in execution
+            \-> program = passive entity, (static binary file on storage)
+                \-> the program itself is not a process hence passive
+        \-> process = active entiy where resources are allocated.
+    
+    Batched System:
+        \-> executes "jobs"
+        
+    Time-Shared System:
+        \-> has user programs or tasks. 
+        \-> Referred to as "Processes"
+    
+    Process States: (One CPU (core))
+        \-> New -> ready (admitted)
+        \-> Ready -> running (scheduler dispatched)
+        \-> Running -> ready (interrupt)
+        \-> Running -> terminated (exit)
+        \-> Running -> waiting (I/O or event wait)
+        \-> Waiting -> Ready (I/O or event completion
+    
+    Process includes:
+        \-> Program counter
+        \-> process stack
+        \-> a data section
+        \-> sometimes includes the Heap
+        
+    Process Control Blocks (PCB):
+        \-> State = ready, running
+        \-> CPU uses
+            \-> Program Counter
+            \-> Registers
+            \-> Priority
+        \-> memory control information
+        
+        Eg.  ____________________
+            | Process state      |
+            | Process number     |
+            | program counter    |
+            | registers          |
+            | memory limits      |
+            | list of open files |
+            |  . . . . .         |
+            | __________________ | 
+    
+        Program Counter:
+            \-> The counter indicates the address of the next instruction to be executed for the process
+            
+        CPU Registers:
+            \-> includes:
+                    \-> accumulators
+                    \-> index registers
+                    \-> stack pointers
+                    \-> general-purpose registers
+                    \-> any condition code information
+            \-> along with the PC this state gets saved in the case that in interrupt occurs
+        
+        CPU Scheduling:
+            \-> process priority
+            \-> pointers to scheduling queues
+            \-> any scheduling parameters
+            
+        Memory-Management information:
+            \-> values of the base
+            \-> limit registers
+            \-> page tables
+            \-> segment tables
+            \-> above depends on the memory system used by the OS
+        
+        Accounting information:
+            \-> amount of CPU
+            \-> real time used
+            \-> time limits
+            \-> account numbers
+            \-> process numbers
+            
+        I/O status information:
+            \-> List of I/O Devices allocated to the process
+            \-> open files etc.
+        
+        NOTE: if the OS supports threading the PCB is expanded to include information about each thread
+        
+    Mode switch:
+        \-> is when CPU changes privilege levels.
+    
+    Context switch:
+        \-> is when the CPU switches from one thread or process to another thread or process.
+    
+    Process Scheduling:
+        \-> objective of MULTIPROGRAMMING is to always have a process running at all times
+        \-> objective of TIME-SHARING is to switch the CPU among processes so frequently 
+            that users can interact with each program while its running
+        \-> to meet these objects the process scheduler selects an available process for program execution on
+            the CPU. 
+        \-> Single processor systems will never have more than one process running
+            \-> if there are multiple processes the rest will have to wait for the CPU to be free and be
+                rescheduled
+    
+    Scheduling Queues:
+        \-> Process enters the system -> gets placed in a "job queue".
+            \-> queue consists of all the processes in the system
+        \-> "Ready Queue" consists of all processes that are residing in main memory and are ready and waiting
+            to be "dispatched" to execution.
+            \-> Ready queue header conatins a pointer field that points to the next PCB in the ready queue
+        \-> "Device queue or I/O queue" contains processes waiting for a particular I/O device.
+            \-> each device has its own I/O queue
+        
+        
+    ----> ready queue -------------------------- CPU --------------->    
+    ------>-|                                     |----------->--|
+    |----- I/O <---- I/O Queue <----- I/O request <--------------|
+    |-------------------------------- time slice expired <-------|
+    |----------- Child executes <------- fork a child <----------|
+    |----------- interrupt occurs <----- wait for interrupt <----|
+
+    NOTE: Once process is terminated it is removed from all queues and has its PCB and resources deallocated
+    
+    Selection process of choosing which process to be executed is carried out by the "Scheduler"
+    
+    Long-Term Scheduler:
+        \-> in a batch system it often occurs that more processes are submitted than can be executed immediately
+        \-> these processes are spooled on a massive-storage device (usually a disk) and kept for later execution
+        \-> this scheduler will select processes from this pool and loads them into memory for execution
+        \-> executes not frequently
+        \-> minutes may seperate the creation of one new process and the next. 
+        \-> controls the degree of multiprogramming
+            \-> if degree of mulitprogramming is stable then the average rate of process creation = the average
+                departure rate of processes leaving the system
+            \-> thus this scheduler needs to be invoked only when a process leaves the system
+        \-> can afford to take more time to schedule the next process. 
+            \-> Very important to pick a good "process mix" since most processes are either "I/O Bound" or 
+                "CPU-Bound" so that both the ready queue and the I/O queue are somewhat balanced
+                
+    Short-Term Scheduler (AKA CPU Scheduler):
+        \-> selects among the processes that are ready for execution and allocates the CPU to one of them
+        \-> selects a new process for the CPU frequently
+        \-> executes new process ~100 milliseconds
+        \-> scheduler must be fast to not waste CPU time
+    
+    Medium-Term Scheduler:
+        \-> OS such as time-sharing systems may introduce this scheduler.
+        \-> key idea:
+            \-> sometimes it can be advantageous to remove a process from memory (and from active contention for
+                CPU)
+                \->This reduces the degree of multiprogramming
+            \-> This removed process can be reintroduced into memory and its execution can be continued from
+                where it left off.
+            \-> This is called "Swapping"
+        \-> swap can be beneficial to improve the process mix or freeing up memory when memory requirements have 
+            overcommitted the available memory.
+        
+            swap in                                                 swap out
+        |--------------- Patially executed swapped out process <--------------------|
+        |                                           /-------------------------------|            
+        |--------------> Ready queue -----------> CPU ------------------------------------> end
+        |------------->-/                           \-------------------------------|
+        |----------------I/O queue <------------ I/O waiting queues ----------------|
+        
+    Scheduling algorithms:
+        \-> first-come-first serve
+        \-> shortest-job-first
+        \-> priority
+        \-> round-robin
+        \-> fair
+        \-> weighted fair
+        
+        
