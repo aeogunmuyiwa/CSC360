@@ -9,3 +9,50 @@ Threads - Chapter 4
 ADDITIONAL READING OF TEXTBOOK IS NEEDED
 WHEN OPPORTUNITY ARISES ADD MORE DETAILS TO THIS :)
 
+------THREADS AND MUTEX------
+
+Thread:
+    \-> lightweight process
+    \-> independent set of instructions
+
+POSIX Threads Portable Operating System Interface:
+    \-> Maintains the compatibility between operating systems
+    \-> Defines an API for creating and manipulating threads.
+
+Threads vs. Processes
+    \-> pthread uses less resources and CPU than fork() would
+    \-> threads able to achieve efficient communication
+
+pThread API:
+    
+    Thread management:
+        \-> Routines that work directly on threads - creaating detaching, joining
+    Synchronization (most important):
+        \-> Semaphores:
+            \->Resource counter
+        \-> Mutexes:
+        \-> Condition Variables:
+    Mutex:
+        \-> Variables that are one of the primary means of implementing synchronization and for protecting shared data when multiple writes occur.
+        \-> Acts like a "lock" (protects access to shared data resource
+        \-> initially "unlocked"
+            \-> if (unlocked) it becomes locked and owned by the calling thread.
+            \-> else if(locked) the calling thread needs to wait until it is unlocked.
+        Types:
+            \-> fast
+            \-> recursive
+            \-> errchk
+            
+        Overall:
+            threads can lock/unlock/trylock on the mutex variable.
+            Functions:
+                \-> pthread_mutex_lock()
+                \-> pthread_mutex_unlock()
+                \-> pthread_mutex_trylock()
+    
+pthread_create()
+    \-> creates the thread
+    \-> eg. pthread_create(&threads, NULL, Function_name, Args);
+    
+pthread_join()
+    \-> used to tell the new thread to wait for a different thread. synchronizes threads
