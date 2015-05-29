@@ -27,6 +27,9 @@ Why do we need OS?
   \-> Share and Separate
     \-> share between devices, programs, computers, users
     \-> protect one from all others.
+  \-> Protects the operating system from errant users and errant users from one another. 
+        \-> designates machine instructions that can cause harm as privileged instruction
+        \-> the hardware only allows these privileged instructions to be executed in kernel mode only.
 
 Memory Heirarchy:
 
