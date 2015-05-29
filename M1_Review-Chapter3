@@ -92,7 +92,11 @@ Processes - Chapter 3
     
     Context switch:
         \-> is when the CPU switches from one thread or process to another thread or process.
-    
+        \-> Kernel saves the context of the old process in its PCB and loads the saved 
+            context of the new process scheduled to run
+        \-> Pure overhead - System does no useful work during a context switch
+        \-> switch times are highly dependent on hardware
+        
     Process Scheduling:
         \-> objective of MULTIPROGRAMMING is to always have a process running at all times
         \-> objective of TIME-SHARING is to switch the CPU among processes so frequently 
@@ -171,4 +175,156 @@ Processes - Chapter 3
         \-> fair
         \-> weighted fair
         
+    Process Creation:
+        \-> Parent Process: create child processes
+            \->
+        \-> Child Process: created by its parent process
+            \-> May be able to obtain resources directly from the OS or it can be constrained by the parent
+                process.
+            \-> Parent may have to partition its resources among its children or share some resources among
+                several of its children. Restricting the child prevents any process from overloading the
+                system by creating too many children. 
+        \-> When a process creates a new process 1 of two things happens
+            \-> the parent continues to execute along with its children
+            \-> the parent waits for its children to terminate
+        \-> two address space possibilities for new process that was forked.
+            \-> child is duplicate of parent process
+            \-> child has a new program loaded into it
+            
+    Process Tree:
+        \-> recursive parent-child relationship
+        \-> eg. /usr/bin/pstree
+    
+    Process ID (PID) and Parent PID (PPID):
+        \-> usually a nonnegative number
+    
+    fork() System call:
+                            parent(pid > 0) 
+                        /--------------------------> wait() ----------> parent continues
+    parent---> fork() <     Child(pid = 0)              |
+                        \---------> exec() --------> exit()
+    
+    
+    Process Termination: exit()
+        \-> report status to parent process
+        \-> release allocated resources
+    
+    Terminate child processes: kill(pid, signal)
+        \->Parent needs to no the id of its child to kill it
+            \-> Some reasons to kill child
+                \-> child exceed its usage of the resources that has been allocated
+                \-> task assigned to the child is no longer required
+                \-> parent is terminating and the OS does not allow child processes without a parent
+        \-> Actually send a signal to the child
+            \-> child resource exceeded, child process no longer need, and so on
+        \-> Parent is exiting
+            \-> cascading termination, find another parent
+                \-> means that all children need to terminate or find a parent
+    
+    Zombie process:
+        \-> A process taht has terminated, but whose parent has not called the wait() yet
+    
+    Orphaned process:
+        \-> Parent did not invoke wait and the parent terminated. 
+        \-> OS then assigns the child process to the parent "init" root
+            \-> init periodically invokes wait so the child will exit
+    
+    Process Communication:
+        Independent process
+            \-> standalone process
+        Cooperating process
+            \-> affected by or affecting other processes
+                \-> sharing, parallel, modularity, convenience
+        Process Communication
+            \-> Shared Memory
+            \-> message passing
+            
+*** REVIEW TEXT BOOK ***
+FOLLOWING NOTES ONLY REFER TO THE SLIDES!
+CONTINUE WITH NOTES FROM TEXTBOOK WHEN OPPORTUNITY ARISES
+
+    Inter-process Communications: (IPC)
+
+    Producer-Consumer Problem:
+        Producer:  
+            \-> produce info to be consumed by consumer
+        Consumer:
+            \-> consume information produced by producer                P ----> BUFFER -----> C
+        Buffer:
+            \-> unbounded: unlimited buffer size
+            \-> bounded: limited buffer size
+                \-> more pratical
+                
+    Shared Memory Solution:
+        Shared Memory: 
+            memory mapping
+                \-> allocated in the calling process's address space
+                \-> attached to other process' address space
+            Data Structure: bounded circular
+                \-> empty, full, # of items ??
+            Producer:
+                \-> wait for an available space
+                \-> update in
+            Cosumer:
+                \-> wait for an available item
+                \-> update out
+                
+    Message Passing:
+        \-> an interface
+        \-> send message
+            \-> send()                                            send()
+        \-> recieve message                                     P ---------------------------> C
+            \-> recieve()                                                           receive()
+        \-> communication link
+            \-> physical (eg memory, bus, network)
+            \-> logical (eg logical properties)
+    
+    Direct Communication:
+        \-> Send a message to process C
+            \-> send(C, message)
+        \-> Receive a message from process P
+            \-> receive(P, message)
+        \-> Communication links
+            \-> one link for one pair
+            \-> one pair needs one link
+                \-> usually bi-directional
+
+    Indirect Communication:
+        \-> Send a message to mailbox A
+            \-> send(A, message)
+        \-> Receive a message from mailbox A
+            \-> receive(A, message)
+        \-> Communication link and mailboxes
+            \-> one link by many pairs
+            \-> many links for one pair
+                \->mailbox owner
         
+    Synchronization:
+        
+        Blocking vs non-blocking
+            \-> blocking send
+                \-> caller blocked until send is completed
+            \-> blocked receive
+                \-> caller blocked until receive is finished
+            \-> non-blocking send
+            \-> non-blocking receive
+            
+        Blocking is a means of synchronization
+    
+    Buffering:
+        Buffer: to hold message temporary
+            \-> Zero Capacity
+                \-> sender blocks until receiver is ready
+                \-> otherwise, message is lost
+            \-> Bounded Capacity
+                \-> when buffer is full, block sender
+                \-> when buffer is not full, no need to block sender
+            \-> Unbounded Capacity
+                \-> no need to block sender
+    
+    
+    
+    
+    
+    
+    
