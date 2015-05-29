@@ -198,5 +198,18 @@ Operating System Structures - Chapter 2
             \-> communicate through known kernel interface
             \-> module dependency
     
-                            
+    Process Communication:
+        
+        Message Passing:
+            \-> communication from one process to another, either directly or indirectly through a common mailbox.
+            \-> A connection must be opened before transfer where the communicator must be known. (host name)
+            \-> useful for exchanging smaller amounts of data, because no conflicts need to be avoided.
+            \-> easier to implement than shared memory because of intercomputer communication
+            
+        Shared Memory:
+            \-> uses shared_memory_create() and shared_memory_attach() system calls to create and gain access
+                to memory locations used by other processes. 
+            \-> 2 or more processes need to agree to shared memory before the memory is shared.
+            \-> Allows maximum speed and convenience when it takes place within a computer.
+            \-> problems exist in the areas of protection and synchronization between the processes sharing memory.
     
