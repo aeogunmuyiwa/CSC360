@@ -161,10 +161,10 @@ Processes - Chapter 3
             overcommitted the available memory.
         
             swap in                                                 swap out
-        |--------------- Patially executed swapped out process <--------------------|
-        |                                           /-------------------------------|            
-        |--------------> Ready queue -----------> CPU ------------------------------------> end
-        |------------->-/                           \-------------------------------|
+        |--------<------ Patially executed swapped out process <--------------------|
+        |                                           /-------------->----------------|            
+        |--------------> Ready queue -----------> CPU ------------->----------------------> end
+        |------------->-/                           \-------------->----------------|
         |----------------I/O queue <------------ I/O waiting queues ----------------|
         
     Scheduling algorithms:
