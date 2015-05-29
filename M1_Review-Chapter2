@@ -1,0 +1,202 @@
+# CSC360
+Operating Systems
+
+Midterm #1 review.
+
+Operating System Structures - Chapter 2
+
+** Operating System Services:
+
+**  User/programmer interfaces
+  
+        \-> command line interface:
+            \-> eg. /bin/bash/ (linux)
+            \-> interactivity: interpreter
+            \-> implementation: internal: dir (DOS), cd (DOS/UNIX)
+                              external: ls (UNIX)
+            \-> programmability: shell script
+          
+        \-> GUI
+            \-> eg. Windows, KDE
+            \-> interactivity: point-and-click, drag-and-drop
+            \-> implementation: integrated with OS
+                              or OS front-end
+            \-> programmability: eg. AutoIt
+        
+        \-> Batch 
+            \-> commands and directives to control thos commands are entered into files, 
+              and then those files are executed
+              
+        \-> API
+            \-> eg. Win32 API: Windows
+                  Java API: Java JVM
+            \-> Another layer of abstraction
+            \-> mostly OS-independent
+            \-> higher level of functionality (implemented by a series of system calls and more)
+          
+        \-> System Calls (See below for different types of system calls!)
+            \-> Primitive interfaces to OS servicesw
+            \-> categories:
+                \-> process control
+                \-> file/device manipulation
+                \-> information manipulation
+            \-> Examples:
+                \-> Open("PATH", O_RDONLY);
+                \-> creat("PATH", S_IRWXU);
+                \-> read();
+                \-> write();
+                \-> close();
+            \-> implementation:
+                \-> Eg issue a Software interrupt
+                \-> User issues system call. 
+                System call goes through the system call interface and gets executed in Kernel mode. 
+                Then the resuilts are returned back to the system call interface and finally back to the user
+          
+        \-> Program Execution
+        \-> I/O operation
+        \-> File manipulation
+        \-> Process Communication
+        \-> Error handling: software/hardware error
+        \-> Resource Allocation and arbitration
+            \-> CPU, memory, storage, I/O
+        \-> Resource Sharing and Protection
+            \-> among processes, users, computers
+            \-> authentication, authorization, accounting
+        \-> Different interfaces to these services
+            \-> regular user, application programmer, system programmer, system designers
+
+**  System Call Types:
+
+    \-> Process Control
+        |-> end, abort
+        |-> load, execute
+        |-> create process, terminate process
+        |-> get process attrivutes, set process attributes
+        |-> wait for time
+        |-> wait event, signal event
+        |-> allocate and free memory
+        
+        Processes shared Data:
+        \-> many cases involve multiple processes that use the same shared data as the other processes. Thus the 
+            OS allows processes to LOCK the shared data. 
+        \-> processes can aquire_lock() and release_lock() so that the shared data is blocked then 
+            released to the other processes
+    
+    \-> File Manipulation
+        |-> create file, delete file
+        |-> open, close
+        |-> read, write, reposition
+        |-> get file attributes, set file attributes
+    \-> device Manipulation
+        |-> request device, release device
+        |-> read, write, reposition
+        |-> get device attributes, set device attributes
+        |-> logically attach or detach devices
+    \-> information maintenance
+        |-> get time or date, set time or date
+        |-> get system data, set system data
+        |-> get process, file, or device attributes
+        |-> set process, file, or device attributes
+    \-> communications
+        |-> create, delete communication connection
+        |-> send, recieve messages
+        |-> attach or detach remote devices
+    \-> protection
+        |-> provides a mechanism for controlling access to the resources provided by a computer system
+        |-> uses permissions to allow access to certain resources.
+
+**  OS Design and Implementation:
+        Simple Structure (MS-DOS)
+            \-> single user
+            \-> almost single process 
+                \-> direct access
+            \-> almost flat memory
+                \-> MZ linked list
+            \-> executables
+                \-> .COM (segment limit)
+                    .EXE (MZ file magic)
+                    
+            STRUCTURE:        
+                 ___________________________________
+                |-------Application Program --------|
+                |___________________________________|
+                    |                               
+                    V                               
+                 ______________________________
+                |---Resident System Program--- |
+                |______________________________|
+                    |                         
+                    V                         
+                 _________________________
+                |--MS-DOS device Drivers--|
+                |_________________________|
+                    |                     
+                    V                     
+                 ___________________________________
+                |----ROM BIOS device Drivers        |
+                |___________________________________|
+                
+    MS-DOS procedure:
+        \-> load program
+            |-> shrink interpreter / make room for program
+        \-> execute program
+            |-> has access to everywhere including the "kernel"/interpreter
+        \-> reload interpreter back
+            |-> else it cannot find the command.com (interpreter) computer crashes
+
+    Layered Structure:
+        \-> layer 0 = Hardware (lowest-level)
+        \-> outside layer = user interface (highest level)
+        
+        \-> Advantages (Pros)
+            \-> It is decomposable and therefore effects separation of concerns and different abstraction levels
+            \-> It allows good maintenance, where you can make changes without affecting layer interfaces
+            \-> each layer hides the existence of ceritain data structures, operations, and hardware 
+                from higher-level layer.
+        \-> Major Difficulties: (Cons)
+            \-> appropriately defining the various layers
+                \-> since a layer can only use lower-level layers carefull planning is necessary
+            \-> tend to be less efficient than other types.
+                \-> each layer adds overhead the the system call
+                \-> ultimately a system call takes longer to execute on a layered system 
+                    than a nonlayered system.
+    
+    Micro-Kernel Structure:
+        \-> Smaller kernel
+        \-> only essentials
+        \-> message passing
+    
+        Pros:
+            \-> provide minimal process and memory management
+            \-> makes extending the operating system easier
+            \-> provides more security and and reliability since most services are running as user instead of kernel
+        Cons:
+            \-> performance may suffer due to increased system-function overhead
+            
+             _______________              _______________
+            |--File Client--|            |--File Server--|
+            |_______________|            |_______________|
+                    ^ |                          | ^
+                    | |                          | |
+                    | |      __________          | |
+                    | |___> |--Kernel--| <_______| |
+                    |______ |__________| __________|
+                                 | ^
+                                 | |
+                                 | |
+                                 V |
+                                 DB?
+    
+    
+    Modular Structure:
+        \-> Object-Oriented Methodology
+            \-> Not necessary implemented in OO languages
+            \-> popular choices for Modern OS, eg. Linux
+            \-> eg insmod fat|vfat|msdos
+        \-> On-demand, loadable kernel modules
+            \-> each module is a separate function/support
+            \-> communicate through known kernel interface
+            \-> module dependency
+    
+                            
+    
