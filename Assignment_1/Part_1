@@ -1,0 +1,90 @@
+/* CSC 360 - Assignment #1 - Part 1 */
+
+1. How many threads are you going to use? Specify the work that you intend each thread to perform.
+
+    Number of Threads = Number of Trains in the input file file + Controller Thread (Program Thread)
+  
+    Threads:
+        \-> Train:
+            \-> Each train thread will handle the loading of of the trains.
+            
+        \-> Program Thread:
+            \-> Initializes all the train threads when reading the input file.
+                once a train thread is created tell the thread to wait until the Program Thread broadcasts a Condition
+                Variable to signal all trains commence loading.
+            \-> This thread will contain the while loop 
+                
+2.  Do the threads work independently? Or, is there an overall “controller” thread?
+
+3.  How many mutexes are you going to use? Specify the operation that each mutex will guard.
+
+4.  Will the main thread be idle? If not, what will it be doing?
+
+5.  How are you going to represent stations (which are collections of loaded trains ready to depart)? That is, what
+    type of data structure will you use?
+    
+6.  How are you going to ensure that data structures in your program will not be modified concurrently?
+
+7.  How many convars are you going to use? For each convar:
+        (a) Describe the condition that the convar will represent.
+        (b) Which mutex is associated with the convar? Why?
+        (c) What operation should be performed once pthread cond wait() has been unblocked and re-acquired the
+            mutex?
+            
+8.  In 15 lines or less, briefly sketch the overall algorithm you will use. You may use sentences such as:
+
+        EG. If train is loaded, get station mutex, put into queue, release station mutex.
+                
+
+
+Procedure of the Program:
+
+    1. Read input file for list of trains containing: 
+        \-> id
+        \-> direction of train
+        \-> priority level (low/high)
+        \-> loading time
+        \-> crossing time
+        
+    2. Signal all trains to load cargo  (broadcast condition variable)
+        2.1 threads started on function: train_thread()
+            \-> load train
+            \-> queue and wait for convar to cross track
+            \-> convar unblocks train.
+            \-> train mutex locks the track
+            \-> wait(crossing time)
+            \-> unlock mutex variable track
+            \-> reset convar
+            \-> close thread
+    
+    3. 
+    
+    (1)     void init(){
+                open file
+                While(file has another train) {
+                    create p_thread (in a list of threads)
+                    tell p_thread to wait until "start loading" convar is broadcasted.
+                }
+                close file
+                for each train call pthread_join
+            }
+        
+    (2.1)   int train_thread(){
+                //load train
+                //queue train
+                //train crosses track
+                //close train thread
+            }
+            
+            int main(){
+    (1)         init()
+    (2)         broadcast("start loading" convar)
+            
+                while(pthreads exist){
+                    //check queues for next train to cross track
+                    
+                    
+                }
+                return 0
+            }   
+        
