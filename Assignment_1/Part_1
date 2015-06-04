@@ -6,7 +6,11 @@
   
     Threads:
         \-> Train:
-            \-> Each train thread will handle the loading of of the trains.
+            \-> threads handles the loading of of the trains.
+            \-> Waits for convar variable to tell it to go.
+            \-> waits while crossing track
+            \-> rel
+            
             
         \-> Program Thread:
             \-> Initializes all the train threads when reading the input file.
@@ -15,14 +19,21 @@
             \-> This thread will contain the while loop 
                 
 2.  Do the threads work independently? Or, is there an overall “controller” thread?
-
+        \-> The train threads will work independently from each other. But the main program thread will control the 
+            train queues and signal the loaded trains to cross the track.
+            
 3.  How many mutexes are you going to use? Specify the operation that each mutex will guard.
+        \-> Number of mutexes = 
+        \-> 
 
 4.  Will the main thread be idle? If not, what will it be doing?
+        \->
 
 5.  How are you going to represent stations (which are collections of loaded trains ready to depart)? That is, what
     type of data structure will you use?
-    
+        \-> The program will use 2 queues one for low priority trains and one for high priority trains. The direction the 
+            train is traveing is already known in the train threads.
+            
 6.  How are you going to ensure that data structures in your program will not be modified concurrently?
 
 7.  How many convars are you going to use? For each convar:
@@ -30,6 +41,10 @@
         (b) Which mutex is associated with the convar? Why?
         (c) What operation should be performed once pthread cond wait() has been unblocked and re-acquired the
             mutex?
+            
+        Convar 1: commence loading:
+            \-> this convar is used to broadcast to all newly created train threads that they can start loading their cargo
+        Convar 2: 
             
 8.  In 15 lines or less, briefly sketch the overall algorithm you will use. You may use sentences such as:
 
@@ -45,6 +60,8 @@ Procedure of the Program:
         \-> priority level (low/high)
         \-> loading time
         \-> crossing time
+    1.1 tell trains to wait for convar to begin loading
+    
         
     2. Signal all trains to load cargo  (broadcast condition variable)
         2.1 threads started on function: train_thread()
@@ -63,7 +80,7 @@ Procedure of the Program:
                 open file
                 While(file has another train) {
                     create p_thread (in a list of threads)
-                    tell p_thread to wait until "start loading" convar is broadcasted.
+    (1.1)           tell p_thread to wait until "start loading" convar is broadcasted.
                 }
                 close file
                 for each train call pthread_join
