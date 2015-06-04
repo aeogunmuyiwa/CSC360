@@ -76,7 +76,7 @@ Procedure of the Program:
     
     3. 
     
-    (1)     void init(){
+    (1)     void init(){ 
                 open file
                 While(file has another train) {
                     create p_thread (in a list of threads)
