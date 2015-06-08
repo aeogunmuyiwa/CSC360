@@ -1,0 +1,49 @@
+/* Lecutre Notes */
+
+June 08, 2015
+
+Process Synchronization:
+
+Producer-Consumer Problem
+    \-> Solutions So far:
+        \-> Bounded Buffer
+        \-> First in first out queue
+        
+    \-> Simpler Solution:
+        \-> fully utilize the circular buffer
+        \-> use a "counter" variable
+        
+        "Counter" Solution
+        
+        //PRODUCER
+        While(true) {
+            while(count == BUFFER_SIZE;
+            buffer[in] = nextproduced;
+            in = (in + 1) % BSIZE_SIZE;
+            count++
+        }
+    
+        //CONSUMER
+        while(true) {
+            while(count == 0);
+            nextConsumed = buffer[out];
+            out = (out + 1) % BUFFER_SIZE;
+            count--;
+            /* consume the item in nextConsumed */   
+        }
+        
+    Race Condition:
+        \-> EG. increment a counter (shared variable)
+        
+    Properties of Solutions:
+        \-> 1. Mutual Exclusion
+                \-> no more than one process in the critical section
+        \-> 2. Making Process
+                \-> if no process in the critical section, one can in
+                \-> "no Deadlock"
+        \-> 3. Bounded waiting
+                \-> for processes that want to get in the critical section, their waiting time is bounded.
+                \-> "no livelock"
+                
+    
+            
