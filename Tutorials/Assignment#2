@@ -1,0 +1,17 @@
+June 12, 2015
+
+VARIABLES FOR EACH TRAIN:
+
+typedef struct Train
+    phtread_t thread
+    pthread_t granted
+    
+    int num
+    int loading_time
+    int crossing_time
+    
+    char priority
+    char direction
+    
+    char state
+    
