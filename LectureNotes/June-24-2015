@@ -1,0 +1,10 @@
+
+
+            TIME            SPACE
+            
+TLB         O(1)            
+LinearPT    O(1)*_mem        ~Logical
+HivePT      alpha#levels    <Logical
+LookupPT    alpha#inuse     alpha#inuse
+HashPT      O(n)            alpha#hash-entries                ** n = collisions
+InvPT       O(physical)     ~physical                         physical << logical
