@@ -1,0 +1,216 @@
+# CSC360
+Operating Systems
+
+Midterm #2 review.
+
+Chapter 6 - CPU Scheduling
+
+Goal:
+    \-> maximize resource utilization
+        \-> CPU, memory, storage
+    \-> improve system responsiveness
+    \-> Eg. CPU burst, I/O burst
+
+Process Scheduling:
+    \-> used when discussing general scheduling concepts
+
+Thread Scheduling:
+    \-> refers to thread specific ideas, scheduling
+    
+Basic Concepts:
+    \-> multiprogramming:
+        \-> several processes are kept in memory at one time.
+        \-> when a running process needs to wait the OS takes the CPU away from that process and gives it to
+            another process.
+        \-> this kind of scheduling is a fundamental function of the OS
+        \-> CPU scheduling is central to OS design
+        
+    \-> CPU-I/O Burst Cycle:
+    
+                :
+                :
+            load store     \
+            add store       |-CPU burst
+            read from file /
+            ----------------
+            | wait for I/O |   -- I/O burst
+            ----------------
+             load store     \
+            add store       |-CPU burst
+            read from file /
+            ----------------
+            | wait for I/O |   -- I/O burst
+            ----------------
+                :
+                :
+            System request to terminate execution
+            
+            I/O-Bound programs
+                \-> typically have many short CPU bursts
+            
+            CPU-Bound program
+                \-> typically might have a few long CPU bursts.
+                
+    CPU Scheduler:
+        \-> Short-Term Scheduler/CPU-Scheduler
+            \->  selects the next process to run from the ready queue.
+            \->  records in the ready queue are generally process control blocks (PCBs) of the process
+            \->  states:
+                    \->  switch from running to waiting(blocked)
+                    \->  switch from running to ready
+                    \->  switch from waiting to ready
+                    \->  terminate (leave system)
+
+    
+    Circumstances for CPU-Scheduling decisions:
+            1) when a process switches from the running state to the waiting state(EG. as the result of
+               an I/O request or an invocation of wait() for the termination of a child process)
+                
+            2) When a process switches from the running state to the ready state (EG. interrupt occurs)
+              
+            3) When a process switches from the waiting state to the ready state (EG. completion of I/O)
+            
+            4) when a process terminates
+            
+    Preemptive Scheduling:
+        \-> when there is a choice to be made. 
+        \-> Circumstances 2 and 3 above.
+        \-> Unfortunately, preemptive scheduling can result in reace conditions when data are shared among
+            several process.
+            \-> consider 2 processes that share data. while one process is updating datam it is preempted so that
+                the 2nd process can run but the data it tries to read is in an inconsistent state.
+        \-> affects the design of the OS kernel
+            \-> What happens if the process is preempted in the middle of changing important kernel data?
+                \-> Most OSs deals with this problem by waiting wither for a system call to complete or for
+                    an I/O block to take place before doing a context switch
+                \-> Ensures that the kernel structure is simple, since the kernel will not preempt a process
+                    while the kernel data structures are in an inconsistent state(in use or being changed)
+    
+        
+    Nonpreemtive Scheduling(aka Cooperative Scheduling):
+        \-> There is no choice in terms of scheduling, a new process (if one exists in the ready queue) must
+            be selection for execution.
+        \-> Circumstances 1 and 4 above.
+        \-> only method that can be used on certain hardware platforms because it does not require special
+            hardware that preemptive scheduling needs (EG. timer).
+    
+    CPU-dispatcher:
+        \-> give control to the process selected by the scheduler
+        \-> Involves:
+            \-> switching context (context switch)
+            \-> switching to user mode (mode switch)
+            \-> jumping from the proper location in the user program to restart that program. (start execution
+                from the newly loaded PC counter.
+        \-> dispatch latency:
+            \-> the time it takes for the dispatcher to stop one process and start another.
+            \-> needs to be as fast as possible
+                \-> invoked during every context switch
+        
+Scheduling Criteria:
+    \-> Criteria used when choosing what scheduling alogrithm to use.
+    
+    Criteria:
+        \-> CPU utilization:
+            \-> want to keep the CPU as busy as possible. 
+            \-> Conceptually, CPU utilization can range from 0 to 100%
+            \-> in a real system, it should range from 40%(lightly loaded system)-90%(heavily loaded system)
+            
+        \-> Throughput:
+            \-> amount of work completed by the CPU
+            \-> number of processes that are completed per time unit. AKA "throughput"
+            \-> for long processes this rate may be 1 process / hour
+            \-> for short processes this rate may be 10 processes / second
+        
+        \-> Turnaround Time:
+            \-> the interval from the time of submission of a process to the time of completion.
+            \-> also is the sum of periods spent waiting to get into memory, waiting in the ready queue, 
+                exectuting on the CPU, and doing I/O
+            \-> generally limited by the speed of the output device from start to finish
+        
+        \-> Waiting Time:
+            \-> the sum of periods spent waiting in the ready queue
+        
+        \-> Response Time:
+            \-> the time from the submission request until the frist response is produced. 
+            \-> time it takes to start responding not the time it takes to output the response.
+        
+    \-> desireable to maximiza CPU utilization and throughput while minimizing turnaround time, waiting time, and
+        response time
+        \-> most cases optimize the average measure.
+    
+Scheduling algorithms:
+    
+    \-> First Come. First Serve (FCFS)
+        \-> |                   p1                        |    p2    |    p3    |
+            0                                            24         27          30
+            
+            \-> waiting time = (0 + 24 + 27)/3 = 17
+            
+            OR
+            
+            |  p2    |    p3   |                       p1                        |
+            0        3         6                                                 30         
+            
+            \-> waiting time = (6 + 0 +3)/3 = 3
+            
+            \-> reduction is substantial.
+                \-> thus the average waiting time inder FCFS policy is generally not minimal.
+    
+    `       \-> convoy effect
+                \-> shorter processes have to wait for longer process to complete.
+                \-> lowers CPU and device utilization
+                
+    \-> Shortest-Job First:
+        \-> Based on th elength of next CPU burst
+            \-> non-preemtive
+                \-> the job with the smallest burst length scheduled first
+            \-> preemptive
+                \-> always the shortest remaining time first
+                \-> if a new process arrives in the ready queue with a shorter burst length than
+                    the process that is currently running then the longer process will be preempted and 
+                    paused until the new process (shorter burst length) has finished.
+                \-> sometimes known as shortest-remaining-time-first scheduling
+        \-> is optimal in average waiting time
+            \-> reduce the total waiting time for all jobs
+            \-> optimal because it reducing the waiting time for shorter processes mor than
+                it increases the waiting time for longer processes.
+        \-> Short-term scheduler does not know what the length of the next CPU burst is
+            \-> but an approximation can be calculated. 
+                \-> known as "exponential average"
+                \-> use the last burst length
+                \-> use the average so far
+                \-> use the moving average
+                \-> use the weighted moving average.
+                \-> get and use the exponentially weight moving average.
+    
+    \-> Priority Scheduling:
+        \-> The job with the highest priority scheduled first
+            \-> SJF: shorter CPU burst thus higher priority
+            \-> FCFS: arrival earlier thus higher priority
+        \-> static prority: starvation
+            \-> EG. SJF
+        \-> preemptive
+            \-> if a higher priority process arrives in the ready queue while a lower priority process
+                is running the process thats running gets preempted and lets the higher priority execute
+        \-> non-preemptive
+            \-> if a higher priority process arrives in the ready queue while a lower priority process
+                is running the new process waits for the process running to finish execution
+        \-> starvation or indefinite blocking
+            \-> when a lower priority process has to continually wait for higher priority to execute in 
+                a heavily loaded system.
+                \-> possible to wait forever.
+            \-> A solution to starvatuion = dynamic priority
+                \-> EG. aging.
+                    \-> gradually increases the priority of process that wait in the system for a long time
+    
+    Round-Robin Scheduling:
+        \-> Discrete processor sharing
+            \-> CPU time quantum
+        \-> for a process
+            \-> either yield after a CPU burst
+            \-> or be preempted after using up a time quantum
+        \-> a FIFO queue
+            \-> all ready processes
+        \-> weighted round-robin
+        
+        
