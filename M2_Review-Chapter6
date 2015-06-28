@@ -212,5 +212,66 @@ Scheduling algorithms:
         \-> a FIFO queue
             \-> all ready processes
         \-> weighted round-robin
+        \-> average weighting time is often long.
+        \-> performance depends heavily on the size of the time quantum
+            \-> extreme: time quantum is extremely large the RR policy = FCFS policy
+            \-> If time quantum is extremely small, results in a large number of context switches. (high overhead)
+                \-> use 80% rule
+                \-> high responsiveness
+        \-> turnaround time depends on the size of the time quantum\
+        \-> time quantum should be large compared with the context switch time but not too large.
+    
+    Multi-queue Scheduling:
+        \-> priorities:
+            
+            |highest priority
+            |------->| system processes |-------------------->
+            |------->| interactive processes |--------------->
+            |------->| interactive editing processes |------->
+            |------->| batch processes |--------------------->
+            |------->| student processes |------------------->
+            |Lowest priority
+            
+        \-> "No one fits all"
+        \-> Multiqueue approach:
+            \-> foreground(interactive) queue
+                \-> Eg RR; better fairness
+                \-> may have higher priority
+            \-> background(batch) queue:
+                \-> Eg FCFS; more efficient
         
-        
+        \-> multilevel queue: (look at priorities appove)
+            \-> partitions the ready queue into several separate queues.
+                \-> processes are permanently assigned to one queue
+                    \-> generally based on some property of the process, such as memory size, process priority
+                        , or process type
+    
+        Multiqueue with feedback:
+            defined by te following paramters                      ______________
+            \-> multiqueue                                  ----> |  quantum = 8 | ------------>
+                \-> number of queues                              |______________| -----\                
+                \-> queuing algorithm for each queue       /----------------------------/
+            \-> multi-queue with feedback                  \----> | quantum = 16 | ------------>
+                \-> promote jobs                                  |______________| -----\
+                \-> demote jobs                            /----------------------------/
+                \-> what qu                                \----> | FCFC         | ---------->                    
+                                                                  |______________|
+            \-> allows a process move between queues                                                      
+                \-> eg a provess waiting too long in the low priority queue can be moved to a higher priority
+                    queue
+                \-> also uses aging 
+            \-> most general CPU-Scheduling algorithm.
+            \-> but also most complex
+            
+            
+            Multiprocessor Queuing:
+                \-> load balance between processors
+                    \-> cooperation and communication
+                \-> Asymmetric multiprocessing
+                    \-> one master scheduler
+                \-> Symmetric multiprocessing
+                    \-> cooperative schedulers
+                        \-> processor affinity: try to stick with one
+                        \-> load balancing: push or poll migration
+                        
+    Thread Scheduling
