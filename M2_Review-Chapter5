@@ -14,20 +14,20 @@ Chapter 5 - Process Synchronization
         
             //producer
             while (true) {
-             /* produce an item and put in nextProduced */
-             while (count == BUFFER_SIZE) ; // do nothing
-             buffer [in] = nextProduced;
-             in = (in + 1) % BUFFER_SIZE;
-             count++;
+                /* produce an item and put in nextProduced */
+                while (count == BUFFER_SIZE) ; // do nothing
+                buffer [in] = nextProduced;
+                in = (in + 1) % BUFFER_SIZE;
+                count++;
             }
             
             //consumer
             while (true) {
-             while (count == 0) ; // do nothing
-             nextConsumed = buffer[out];
-             out = (out + 1) % BUFFER_SIZE;
-             count--;
-             /* consume the item in nextConsumed */
+                while (count == 0) ; // do nothing
+                nextConsumed = buffer[out];
+                out = (out + 1) % BUFFER_SIZE;
+                count--;
+                /* consume the item in nextConsumed */
             }
     
     Race-Condition:
