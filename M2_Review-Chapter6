@@ -262,9 +262,52 @@ Scheduling algorithms:
                 \-> also uses aging 
             \-> most general CPU-Scheduling algorithm.
             \-> but also most complex
+                        
+    Thread Scheduling:
+        \-> Process-Contention Scope
+            \-> local: user -> kernel thread
+                \-> eg. within a process
+        \-> System-Contention Scope    
+            \-> global: kernel -> CPU
+                \-> eg across system
+        \->algorithm evaluation
+            \-> queuing analysis
+                \-> little's law: n = lambda * W
+            \-> simulation
+        
+        Linux Scheduling"
+            \-> O(n): global run queue
+                n = number of processes
+            \-> O(1): double linked list
+                \->active/expired set
+            \-> 140 prority levels
+                \-> realtime (0-99)
+                \-> user (100-139) nice/quantum sizes
+            \-> interactive vs CPU-bound: interactivity
+        
+        Pthread Scheduler:
+            \-> PTHREAD_SCOPE_PROCESS
+                \-> schedules threads using PCS scheduling
+            \-> PTHREAD_SCOPE_SYSTEM
+                \-> schedules threads using SCS scheduling
             
+            \->pthread_attr_setschedpolicy();
+                 \-> regular, non-realtime (nice-able)
+                 \-> realtime, round-robin (preemptive, priveleged)
+                 \-> realtime, FCFS (non-preemptive, privieleged)
             
-            Multiprocessor Queuing:
+            \-> pthread_attr_setschedparam();
+            \-> pthread_attr_setscope(pthread_attr_t *attr, int scope);
+                \-> PTHREAD_SCOPE_PROCESS
+                    \-> schedules threads using PCS scheduling
+                    \-> scheduling within a process
+                \-> PTHREAD_SCOPE_SYSTEM
+                    \-> schedules threads using SCS scheduling
+                    \-> scheduling for the entire system.
+               
+    Multiple-Processor Scheduling:
+        
+        Multiprocessor Queuing:
                 \-> load balance between processors
                     \-> cooperation and communication
                 \-> Asymmetric multiprocessing
@@ -274,4 +317,4 @@ Scheduling algorithms:
                         \-> processor affinity: try to stick with one
                         \-> load balancing: push or poll migration
                         
-    Thread Scheduling
+        
