@@ -1,0 +1,137 @@
+# CSC360
+Operating Systems
+
+Midterm #2 review.
+
+Chapter 5 - Process Synchronization
+
+    Cooperative Proceess:
+      \->  a process that can affect or be affected by other processes executig in the system.
+    
+    Producer-Consumer Problem:
+
+        The “counter” solution
+        
+            //producer
+            while (true) {
+             /* produce an item and put in nextProduced */
+             while (count == BUFFER_SIZE) ; // do nothing
+             buffer [in] = nextProduced;
+             in = (in + 1) % BUFFER_SIZE;
+             count++;
+            }
+            
+            //consumer
+            while (true) {
+             while (count == 0) ; // do nothing
+             nextConsumed = buffer[out];
+             out = (out + 1) % BUFFER_SIZE;
+             count--;
+             /* consume the item in nextConsumed */
+            }
+    
+    Race-Condition:
+        \-> an undesireable situation when a device or system attempts to perform two or more operations 
+            at the same time
+        \-> When 2 or more threads can access shared data and try to change it. where the outcome depends on a
+            particular order of execution
+        
+    Critical Section Problem (solutions):
+        \-> Problem: only one process can access data in the critical section at any given time.
+        \-> non-preemptive kernel is essentiallt race condition free
+         \-> but preempted kernels allow processes to be switch during a particular processes execution.
+        
+        \-> Must satisfy 3 condition:
+                1) Mutual exclusion: 
+                    \-> one one process has access to the critical section at any given time
+                2) Making Progess: 
+                    \-> if no process is in the critical section a process waiting for the critical
+                        section can enter it.
+                3) Bounded waiting-time:
+                    \-> for processes that want to get in the critical section, their waiting time is bounded.
+        
+        General structure of solution:
+            \-> Processes may share some common variables to synchronize their actions
+            
+            do {
+                entry section
+                    critical section
+                exit section
+                    remainder section
+            } while(1)
+    
+        Algorithm 1:
+        
+            shared variables:
+                \-> when turn == i P_i can enter critical section
+                
+                int turn; //initially turn = 0
+                
+                //P_i
+                do {
+                    while(turn != i); //wait
+                        critical section
+                    turn = j;
+                        remainder section
+                } while (1);
+                
+        Algorithm 2:
+            
+            shared variables:
+                \-> when flag[i] = true P_i is ready to enter its critical section
+                
+            boolean flag[2]; //initially flag[0] = flag[1] = false
+            
+            //P_i
+            do {
+                flag[i] := true;
+                while(flag[j]);
+                    critical section
+                flag[i] = false;
+                    remainder section
+            } while(1);
+            
+        Dekker's Solution:
+            \-> Combined shared variables of algorithm's 1 and 2
+            
+            int turn; //initially turn = 0
+            boolean flag[2]; //initially flag[0] = flag[1] = false
+            
+            //P_i
+            while(true) {
+                flag[i] = true;
+                while(flag[j]) {
+                    if(turn == j) {
+                        flag[i] = false;
+                        while(turn ==j); //wait
+                        flag[i] = true;
+                    }
+                }
+                /*critical section */
+                turn = j;
+                flag[i] = false;
+                /* remainder section */
+        
+             \-> meets all three requirments. (mutual exclusion, bounded wait, making progress
+            
+        Peterson's solution:
+            \-> a SIMPLER solution
+                \-> combined shared variables of algorithms 1 and 2
+                            
+            int turn; //initially turn = 0
+            boolean flag[2]; //initially flag[0] = flag[1] = false
+            
+            //Process P_i
+            
+            do {
+                flag[i] := true;
+                turn = j;
+                while(flag[j] and turn == j); //wait
+                
+                /* critical section */
+                flag[i] = false;
+                /*remainder section
+            } while(1);
+            
+            
+            \-> meets all three requirments (mutual exclusion, making progress, bounded wait-time)
