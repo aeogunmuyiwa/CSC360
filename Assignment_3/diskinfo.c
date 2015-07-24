@@ -5,7 +5,6 @@
  *
 */
 
-#include "diskinfo.h"
 #include "commonFunctions.h"
 
 struct superblock_t sb_t;
@@ -18,7 +17,6 @@ struct superblock_t sb_t;
 */
 void readFATInfo(char *mmap)
 {
-
     //set size parameters
     int offset = sb_t.fat_start_block;
     int length = sb_t.fat_block_count;
@@ -38,7 +36,7 @@ void readFATInfo(char *mmap)
 
     int i = 0;
     int entry_size = SIZE_FAT_ENTRY;
-    
+
     //read the last byte of every FAT entry
     //increment different counts depending on byte value.
     for(i = entry_size-1; i < size; i+= entry_size)
@@ -51,7 +49,6 @@ void readFATInfo(char *mmap)
         else
             sb_t.alloc_blocks++;
     }
-
     free(temp);
 }
 
@@ -60,30 +57,10 @@ void readFATInfo(char *mmap)
 */
 int main(int argc, char **argv)
 {
-    char *filename = argv[1];
-    struct stat stats;
-    char *p;
+    //get all the information from the super block
+    char *p = getAllSuperBlock(argv[1]);
 
-    int open_file = open(filename, O_RDONLY);
-    if(open_file == -1)
-    {
-        printf("[ERROR]: %s was not found\n", filename);
-        return -1;
-    }
-
-    //make a mmap from open_file
-    fstat(open_file, &stats);
-    p = mmap(NULL, stats.st_size, PROT_READ, MAP_SHARED, open_file, 0);
-
-    //get all information needed to locate additional information in the File Allocation Table
-    sb_t.block_size = getBlockSize(p);
-    sb_t.block_count = getSuperBlockInfo(p, 10, 4);
-    sb_t.fat_start_block = getSuperBlockInfo(p, 14, 4);
-    sb_t.fat_block_count = getSuperBlockInfo(p, 18, 4);
-    sb_t.dir_start_block = getSuperBlockInfo(p, 22, 4);
-    sb_t.dir_block_count = getSuperBlockInfo(p, 26, 4);
-
-    //get allocated blocks, reservered blocks, free blocks
+    //get allocated blocks, reservered blocks, free blocks in FAT
     readFATInfo(p);
 
     //print info

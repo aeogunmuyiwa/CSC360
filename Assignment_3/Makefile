@@ -8,7 +8,10 @@ createDiskinfo:
 createDisklist:
 	gcc -Wall disklist.c commonFunctions.c -o disklist
 
+createDiskget:
+	gcc -Wall diskget.c commonFunctions.c -0 diskget
+
 .PHONY clean:
 
 clean:
-	-rm diskinfo disklist
+	-rm diskinfo disklist diskget

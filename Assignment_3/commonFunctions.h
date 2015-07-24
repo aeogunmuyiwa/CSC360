@@ -17,6 +17,29 @@
 #define MODIFY_TIME_START 20
 #define MODIFY_TIME_SIZE 7
 
+// Super block
+struct superblock_t {
+ uint16_t block_size;
+ uint32_t block_count;
+ uint32_t fat_start_block;
+ uint32_t fat_block_count;
+ uint32_t dir_start_block;
+ uint32_t dir_block_count;
+ uint32_t res_blocks;
+ uint32_t alloc_blocks;
+ uint32_t free_blocks;
+} PACKED;
+typedef struct superblock_t superblock_t;
+
+// struct dir_entries_t {
+//     char file_type;
+//     int file_size;
+//     char *file_name;
+//     char *modified_time;
+// }
+// typedef struct dir_entries_t dir_entries_t;
+
 int getSuperBlockInfo(char *mmap, int offset, int length);
+char *getAllSuperBlock(char *filename);
 int getBlockSize(char *mmap);
 void checkAllocation(char *temp);

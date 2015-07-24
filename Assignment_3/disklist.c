@@ -21,13 +21,15 @@ char *calculateModifiedTime(char *modify_time)
     return modify_time;
 }
 
+
 /* --getFileList();
  * Purpose: get the list of files in a Directory
 */
-void listDirectoryEntries(char *mmap, int offset, int length, int num_dir_blocks, int block_size)
+void listDirectoryEntries(char *mmap, int offset, int num_dir_blocks, int block_size)
 {
     int i, j, k;
 
+    int length = SIZE_DIR_ENTRY;
     char *dir_entry = (char *)malloc(sizeof(char) * length);
     char *file_name = (char *)malloc(sizeof(char) * FILE_NAME_SIZE);
     unsigned char *file_size_bytes = (unsigned char *)malloc(sizeof(unsigned char) * FILE_SIZE);
@@ -54,7 +56,6 @@ void listDirectoryEntries(char *mmap, int offset, int length, int num_dir_blocks
             }
             else break;
 
-            //get file_name and file_size_bytes from dir_entry
             memcpy(file_name, dir_entry + FILE_NAME_START, FILE_NAME_SIZE);
             memcpy(file_size_bytes, dir_entry + 9, FILE_SIZE);
 
@@ -80,7 +81,44 @@ void listDirectoryEntries(char *mmap, int offset, int length, int num_dir_blocks
     free(file_size_bytes);
     free(modify_time);
 }
+void listSubdirEntries(char *mmap, char *subdir, int offset, int num_dir_blocks, int block_size)
+{
+    int i, j;
+    int length = SIZE_DIR_ENTRY;
+    char *dir_entry = (char *)malloc(sizeof(char) * length);
+    char *file_name = (char *)malloc(sizeof(char) * FILE_NAME_SIZE);
 
+    for (i = 0; i < num_dir_blocks; i++)
+    {
+        for (j = 0; j < 8; j++)
+        {
+            //get directory entry char* from mmap
+            memcpy(dir_entry, mmap+offset+block_size*i+length*j, length);
+
+            // if((dir_entry[0] & 0x02) == 0x02)
+            // {
+            //     break;
+            // }
+            // else if((dir_entry[0] & 0x04) == 0x04)
+            // {
+                memcpy(file_name, dir_entry + FILE_NAME_START, FILE_NAME_SIZE);
+                if(!strcmp(file_name, subdir))
+                {
+                    uint32_t start_block = getSuperBlockInfo(dir_entry, 1, 4);
+                    uint32_t num_blocks = getSuperBlockInfo(dir_entry, 5, 4);
+                    listDirectoryEntries(mmap, start_block*block_size, num_blocks, block_size);
+                }
+            // }
+            // else break;
+
+
+        }
+    }
+
+    //release allocated memory
+    free(dir_entry);
+    free(file_name);
+}
 
 /* --Main()
  * Purpose: Controls the main flow of the program
@@ -89,7 +127,7 @@ void listDirectoryEntries(char *mmap, int offset, int length, int num_dir_blocks
 int main(int argc, char **argv)
 {
     char *filename = argv[1];
-    // char *subdir = argv[2];
+    char *subdir = argv[2];
     char *p;
     struct stat stats;
 
@@ -110,5 +148,12 @@ int main(int argc, char **argv)
     int block_size = getBlockSize(p);
 
     //get directory entries
-    listDirectoryEntries(p, dir_start_block*block_size, SIZE_DIR_ENTRY, dir_block_count, block_size);
+    if(subdir != NULL)
+    {
+        listSubdirEntries(p, ++subdir,  dir_start_block*block_size, dir_block_count, block_size);
+    }
+    else
+    {
+        listDirectoryEntries(p, dir_start_block*block_size, dir_block_count, block_size);
+    }
 }
