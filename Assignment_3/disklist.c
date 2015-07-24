@@ -1,4 +1,3 @@
-#include "disklist.h"
 #include "commonFunctions.h"
 
 
@@ -150,10 +149,18 @@ int main(int argc, char **argv)
     //get directory entries
     if(subdir != NULL)
     {
-        listSubdirEntries(p, ++subdir,  dir_start_block*block_size, dir_block_count, block_size);
+        if(subdir[0] == '\\' || subdir[0] == '/')
+        {
+            listSubdirEntries(p, ++subdir,  dir_start_block*block_size, dir_block_count, block_size);
+        }
+        else
+        {
+            listSubdirEntries(p, subdir,  dir_start_block*block_size, dir_block_count, block_size);
+        }
     }
     else
     {
         listDirectoryEntries(p, dir_start_block*block_size, dir_block_count, block_size);
     }
+    return 0;
 }
