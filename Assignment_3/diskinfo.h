@@ -16,5 +16,8 @@ struct superblock_t {
  uint32_t fat_block_count;
  uint32_t dir_start_block;
  uint32_t dir_block_count;
+ uint32_t res_blocks;
+ uint32_t alloc_blocks;
+ uint32_t free_blocks;
 } PACKED;
 typedef struct superblock_t superblock_t;

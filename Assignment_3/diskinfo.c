@@ -7,11 +7,11 @@
 
 #include "diskinfo.h"
 
-
+struct superblock_t sb_t;
 /*--readFAT(Char *mmap, int offset, int length);
  *
 */
-void readFAT(char *mmap, struct superblock_t sb_t)
+void readFAT(char *mmap)
 {
 
     int offset = sb_t.fat_start_block;
@@ -22,47 +22,33 @@ void readFAT(char *mmap, struct superblock_t sb_t)
     int FAT_end = FAT_start + length * block_size;
     int size = FAT_end - FAT_start;
 
-    printf("size = %d\n", size);
-
     char *temp = (char *)malloc(size);
     memcpy(temp, mmap+FAT_start, size);
 
     int i = 0;
-    // int j = 0;
     int free_blocks = 0;
     int reserved_blocks = 0;
     int alloc_blocks = 0;
 
     for(i = 0; i < size; i+=4)
     {
-        // int value = 0;
-        // int num_bytes = 3;
-        // for(int j = i; j < i + 4; j++)
-        // {
-        //     value += (int)temp[j]<<(8*(num_bytes));
-        //     num_bytes--;
-        // }
-        int value = (int)temp[i+4]<<0;
-
-        printf("value = %d\n", value);
-
+        int value = 0;
+        int num_bytes = 3;
+        for(int j = i; j < i + 4; j++)
+        {
+            value += (int)temp[j]<<(8*(num_bytes));
+            num_bytes--;
+        }
         if(value == 0)
-        {
             free_blocks++;
-        }
         else if(value == 1)
-        {
             reserved_blocks++;
-        }
         else
-        {
             alloc_blocks++;
-        }
     }
-    printf("\nfree_blocks = %d\n", free_blocks);
-    printf("reserved_blocks = %d\n", reserved_blocks);
-    printf("alloc_blocks = %d\n", alloc_blocks);
-
+    sb_t.free_blocks = free_blocks;
+    sb_t.res_blocks = reserved_blocks;
+    sb_t.alloc_blocks = alloc_blocks;
 }
 
 /*--getSuperBlockInfo();
@@ -109,11 +95,7 @@ int main(int argc, char **argv)
     struct stat stats;
     char *p;
 
-    struct superblock_t sb_t;
-
-    int free_blocks = 0;
-    int res_blocks = 0;
-    int alloc_blocks = 0;
+    // struct superblock_t sb_t;
 
     int open_file = open(filename, O_RDONLY);
     if(open_file == -1)
@@ -131,8 +113,7 @@ int main(int argc, char **argv)
     sb_t.dir_start_block = getSuperBlockInfo(p, 22, 4);
     sb_t.dir_block_count = getSuperBlockInfo(p, 26, 4);
 
-    readFAT(p, sb_t);
-
+    readFAT(p);
 
     printf("\nSuper Block Information:\n");
     printf("Block Size: %d\n", sb_t.block_size);
@@ -142,9 +123,9 @@ int main(int argc, char **argv)
     printf("Root Directory Start: %d\n", sb_t.dir_start_block );
     printf("Root Directory Blocks: %d\n", sb_t.dir_block_count);
     printf("\nFAT Information:\n");
-    printf("Free Blocks: %d\n", free_blocks);
-    printf("Reserved Blocks: %d\n", res_blocks);
-    printf("Allocated Blocks: %d\n", alloc_blocks);
+    printf("Free Blocks: %d\n", sb_t.free_blocks);
+    printf("Reserved Blocks: %d\n", sb_t.res_blocks);
+    printf("Allocated Blocks: %d\n", sb_t.alloc_blocks);
 
     return 0;
 
