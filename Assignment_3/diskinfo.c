@@ -6,17 +6,9 @@
 */
 
 #include "diskinfo.h"
+#include "commonFunctions.h"
 
 struct superblock_t sb_t;
-
-void checkAllocation(char *temp)
-{
-    if(temp == NULL)
-    {
-        printf("[ERROR]: Failed to allocate memory in function readFATInfo()");
-        exit(-1);
-    }
-}
 
 /*--readFAT(Char *mmap, int offset, int length);
  * Purpose: Read bytes in the File Allocation Table!
@@ -45,66 +37,22 @@ void readFATInfo(char *mmap)
     memcpy(temp, mmap+FAT_start, size);
 
     int i = 0;
-    int free_blocks = 0;
-    int reserved_blocks = 0;
-    int alloc_blocks = 0;
-
+    int entry_size = SIZE_FAT_ENTRY;
+    
     //read the last byte of every FAT entry
     //increment different counts depending on byte value.
-    for(i = 3; i < size; i+=4)
+    for(i = entry_size-1; i < size; i+= entry_size)
     {
         int value = (int)temp[i];
         if(value == 0)
-            free_blocks++;
+            sb_t.free_blocks++;
         else if(value == 1)
-            reserved_blocks++;
+            sb_t.res_blocks++;
         else
-            alloc_blocks++;
+            sb_t.alloc_blocks++;
     }
-    sb_t.free_blocks = free_blocks;
-    sb_t.res_blocks = reserved_blocks;
-    sb_t.alloc_blocks = alloc_blocks;
 
     free(temp);
-}
-
-/*--getSuperBlockInfo();
- * Purpose: Get information found in the mmap inbetween the offset and the offset + length
- * Input: mmap, memory offset, length of bytes to read.
- * Output: determined value found in the mmap
-*/
-int getSuperBlockInfo(char *mmap, int offset, int length)
-{
-    //allocate memory in temp.
-    char *temp = (char *)malloc(sizeof(char) *length);
-    checkAllocation(temp);
-    memcpy(temp, mmap+offset, length);
-
-    int i = 0;
-    int retVal = 0;
-
-    for(i = 0; i < length; i++)
-    {
-        retVal += ((int)temp[i]<<(8*(length - i - 1)));
-    }
-    free(temp);
-    return retVal;
-}
-
-/*--getBlockSize(char *mmap, int offset, int length)
- * Purpose: get the size of the blocks
-*/
-int getBlockSize(char *mmap)
-{
-    int *temp = malloc(sizeof(int));
-    int *temp2 = malloc(sizeof(int));
-    int retVal;
-    *temp = mmap[8];
-    *temp2 = mmap[9];
-    retVal = ((*temp)<<8)+(*temp2);
-    free(temp);
-    free(temp2);
-    return retVal;
 }
 
 /* --Main()
