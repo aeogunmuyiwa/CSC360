@@ -1,0 +1,48 @@
+# CSC360
+Operating Systems
+
+Midterm #3 review.
+
+Storage Management - Chapter 10
+
+Slide: Mass Storage
+
+  Magnetic Disk:
+    □ provides the bulk of secondary storage for modern computer systems
+    □ date rate:
+      □ the rate at which data flows between the drive and the computer.
+    □ Access Time:
+      □ consists of two parts:
+        1) seek time - the time necessary to move the disk arm to the desired cylinder 
+        2) rotational latency - the time necessary for the desired sector to roate to the disk head
+      □ Interface: ATA, SATA, SCSI, FC, etc
+  
+  Magnetic Tape:
+    □ used mainly for backup
+    
+  Network Attached Storage (NAS)
+    □ EG. file shares home directories...
+  
+  Storage Area Network
+    □ block storage
+  
+  
+  Disk Scheduling:
+    □ First come first server:
+      □ simplest scheduling
+      □ not the fastest service
+    
+    □ SSTF Scheduling: (Shortest-seek-time-first)
+      □ not optimal but better than FCFS
+      □ reduces head movement
+      □ starvation is a posibility
+    
+    □ SCAN scheduling: (elevator algorithm)
+      □ The head continuously scans back and forth across the disk
+    
+    □ C-SCAN Scheduling: (circular scan)
+      □ similar to SCAN scheduling except skips all reqeuest on its return trip to the beginning of disk
+      □ fairness
+    
+    □ Look scheduling:
+      □ looks for closest request and proceeds to it.
