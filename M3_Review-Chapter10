@@ -1,0 +1,100 @@
+# CSC360
+Operating Systems
+
+Midterm #3 review.
+
+Mass Storage Structure - Chapter 10
+
+Slides: File Systems
+
+  File Concepts
+    □ File: Logical storage unit for information
+    □ File type: data (text, binary, ...), program
+    □ File Attributes: Meta information
+      □ name, size, time, owner, protection, location, ...
+      □ kept in directory, (a special file)
+    □ File Operations:
+      □ create, write, seek, append, truncate, etc
+      
+  File Structures:
+    □ is how information is organized within a file
+      □ unstructured
+      □ structured with records. 
+      □ Examples:
+        □ binary executable
+        □ binary archive
+          □ modules
+  
+  File Access:
+    □ Sequential access
+      □ variable length records.
+      □ to access record ri, go through r1 to ri-1 first
+    
+    □ Direct Access
+      □ fixed length records of size s
+      □ i-th record: offset n(i-1)*s
+    
+    □ indexed access
+      □ access index first
+      
+  Directory Concepts:
+    □ A special file
+      □ a collection of meta information of files.
+      □ normally structured
+      □ and allow direct access
+    
+    □ directory operations
+      □ "file: operations on directory records
+    
+    □ File system on disk
+      □ partitions, file Systems (FAT, FDT), files
+      
+  Acyclic-graph Directories:
+    Links: effectively another pointer to a file or subdirectory
+      □ HardLink:
+        □ isnt a pointer to a file. its a directory entry (a file) pointing to the same inode. Even if you change the name
+          of the other file, a hardlink still points to the file. (reference to an object)
+      □ Symbolic link:
+        □ points to another path (a filename).
+        □ resolves the name of the file each time you access it through the symlink.
+        □ if the file is removred, the symlink will not follow.
+          □ if the file is replaced with a file of the same name the symbolic link will point to the new file. 
+        □ can span filesystems.
+        □ only contains information about the path to the file does not care about the file at all. no information about the 
+          file.
+    
+    resolve:
+      □ we resolve the link by using that path name to locate the real file.
+      
+  File System Operationgs:
+    □ Mount File Systems:
+
+  File sharing and protection:
+    □ File Attributes:
+      □ owner: userID, group ID
+    □ type of access:
+      □ read, write, execute, etc.
+    □ Share over the network. 
+      □ Host id
+      □ NFS: network file systems.
+        □ remote procedure calls
+      
+  Failure Mode:
+    □ Local file systems:
+      □ hardware failure
+      □ corrupted information
+    □ remote file systems:
+      □ network failure
+    □ Fault-tolerant systems:
+      □ keep state at both sides, or
+      □ stateless but less secure
+      
+  Consistency control
+    □ multiple users access a file simultaneously
+      □ lock!
+        □ entire file or
+        □ certain records
+      □ complexity and (network) overhead
+    □ consistency semantics:
+      □ unix semantics: write immediately visible
+      □ session (open()-close()) semantics: eg. AFS
