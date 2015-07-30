@@ -1,0 +1,277 @@
+# CSC360
+Operating Systems
+
+Midterm #3 review.
+
+File System Implementation - Chapter 12
+      
+Slides: Implementation
+      
+    File System Structure:
+      
+      LAYERED SYSTEM:
+      
+      Application Programs
+              |
+              |
+              V
+       logical file system
+              |
+              |
+              V
+      file-organization module
+              |
+              |
+              V
+        basic file system
+              |
+              |
+              V
+         I/O control
+              |
+              |
+              V
+           devices
+           
+    □ to improve I/O efficiency, I/O transfers between memory and disk are performed in units of blocks.
+      □ each block can has one or more sectors
+      □ usual size is 512 bytes
+              
+    □ File Systems: provide efficient and convenient access to the disk by allowing data to be stored, located, and
+      retrieved easily.
+    
+    □ I/O control level consists of device drivers and interrupt handlers to transfer information between the main memory
+      and the disk system
+    
+    □ The basic file system needs only to issue generic commands to hte appropriate device drivers to read and write physical
+      blocks on the disk.
+      
+  File System Organization:
+    □ Sectors: eg. 512 bytes
+    □ Block
+      □ data blocks
+      □ control blocks
+        □ Boot control Block (per volume):
+          □ contains information needed by the system  to boot an operating system from that volume
+        □ Volume control block (per volume):
+          □ contains wolume (or partition) details such as the number of blocks in the partition, the size of blocks,
+            a free=block count and free-block pointers, a free-FCB count and FCB pointers
+            □ EG "super block" in linux. "master file table" in windows.
+        □ boot, partition, (root) directory, file control blocks.
+    □ Access Blocks
+      □ logical block address
+      □ physical block address: disk geometry
+      
+    □ Typical file-control block
+    
+      file permissions
+      file dates (create, access, write)
+      file owner, group, ACL
+      file size
+      file data blocks or pointers to file data blocks
+  
+  File-System implementation:
+    □ consists of 3 layers.
+      1) file-system interface, based on the open(), read(), write(), close() calls on file descriptors.
+      2) Virtual File System layer
+        □ OO design
+          □ same API to different file systems.
+        □ serves 2 important functions:
+          1) It seperates file-system-generic operations from their implementation by defining a clean VFS
+             interface. Several implementations for the VFS interface may coexist on the sam emachine, allowing
+             transparent access to different types of file systems mounted locally..
+             
+          2) It provides a mechanism for uniquely representing a file through a network. The VFS is based on a
+             file representation structure, called a vnode, that contains a numerical designator for a
+             network-wide unique file. 
+              □ UNIX inodes are unique within only a single file system.)
+              □ kernel maintains one vnode structure for each active node (file or derectory)
+          
+          3) layer implementing the file-system type or the remote-file-system protocol
+          
+    VFS architecture:
+      □ 4 main objects:
+        1) inode object: represents an individual file
+        2) file object: represents an open file
+        3) superblock object: represents an entire file system
+        4) dentry object: represents an individual directory entry
+    
+    Directory implementation:
+      Directory Table:
+        □ Linear list:
+          □ simplest method, linear list of names with pounters to data blocks
+          □ advantage: simple to program
+          □ disadvantage: time-consuming to execute
+        
+        □ Hash Table:
+          □ linear list with hash data structure
+          □ advantage: decreases directory search time
+          □ disadvantage: 
+            □ collisions - situations where two file names hash to the same location
+            □ fixed size
+      
+      Directory Entry:
+        EG. UNIX (inode, name")
+    
+    Allocation Methods:
+      
+      
+      Contiguous Allocation
+        □ Each file occupies a set of contiguous blocks on the disk
+        
+        Advantages
+          □ simple - only requre
+            - starting location (block #) 
+            - length (number of blocks)
+        
+        Difficulties:
+          □ Finding space for a new file
+            □ first fit, best fit
+            □ external fragmentation
+          □ file size is unkown while created
+          
+        
+        Disadvantages:
+          □ Wastefule of space (dynamic storage-allocation problem)
+          □ Files cannot grow (difficult to expand)
+      
+      Modified Contiguous Allocation:
+        Extent-Based Systems:
+          □ Many newer file systems use a modifed allocation scheme
+          
+          □ extent-based file systems allocate disk blocks in extents
+            □ an extent is a contiguous block of disks
+            □ A file consists of one or more extents
+          □ design:
+            □ initially, a contiguous chunk of space is allocated
+            □ if not enough, another chunk (called extent) is added
+              □ the location of a file's blocks is recorded as a location and a block,
+                plus a link to the first block of the next extent.
+                
+      Linked Allocation:
+        □ Each file is a linked list of disk blocks: blocks may be scattered anywhere on disk
+        □ advantages:
+          □ Simple need only starting address
+          □ free-space management systems no waste of space
+          □ easy to expand
+        □ disadvantages:
+          □ Space reqyre for the pointers
+            □ unit of cluster (multiple blocks)
+              - one pointer for multiple blocks
+              - fast disk access time
+              - internal fragementation
+            □ slow access to block i
+            □ low reliability due to crash
+            □ no direct random access
+        EG. File Allocation Table
+      
+        FDT - File directory Table:
+          □ first block address
+        FAT - File allocation Table:
+          □ linked list of addresses
+          □ can be cached
+            □ random access
+            
+      Indexed Allocation:
+        □ brings all pounters per file together ino the index block
+        □ advantages:
+          □ solves external fragmentation
+          □ no size-declaration problem
+          □ support direct access
+          □ easy to expand
+        □ disadvantages:
+          □ internal fragmentation
+          □ greater pointer overhead than linked allocation
+          □ Limited by the size of the index block
+  
+      Indirect Index:
+        □ contains 12 direct indexes
+        □ 1 single indirect:
+          □ index points to anothe index table
+        □ 1 double indirect:
+          □ index points to another index table, which points to another index table
+        □ 1 triple indirect:
+          □ index points to another index table, which points to another index table, which points to another index table
+        □ 4kb block
+        
+Slides: More implementation
+  
+  Free-Space Management:
+    □ Keeps track of free blocks
+    □ Bitmap:
+       □ 1 bit indicates whether a block is free or not
+    □ Linked-List:
+      □ links together all the free disk blocks
+        □ "one big file"
+        □ cannot get contiguous space easily
+        □ no waste of space
+    □ Grouping: List of free blocks
+    □ counting: contiguoys blocks
+    
+  Efficiency and Performance:
+    □ Efficiency dependent on:
+      □ disk allocation and directory algorithms
+      □ types of data kept in file's directory entry
+    □ performance
+      □ disk cache - separate section of main memory for frequently used blocks
+      □ free-behind and read-ahead - techniques to optimize sequential access
+      □ improve PC performance by dedicating section of memory as virtual disk or RAM disk
+      □ buffer vs page cache
+        □ unified buffer cache: uses the same page cache to cache both memory-mapped pages and ordinary file
+          system I/O
+    □ Page cache
+      □ A page cache caches pages rather than disk blocks using virtual memory techniques
+      □ Memory-mapped I/O uses a page cache
+  
+  Consistency Check:
+    □ Inconsistency
+      □ between files and their meta-information
+        □ due to hardware/software failure
+    □ Consistency Check:
+      □ fsck: file systems consistency check
+        □ super block consistency
+          □ wrong counters
+        □ inode consistency
+          □ unreferenced inodes, missing free blocks, bad free blocks
+    
+  Backup and Restore:
+    □ Backup to another storage device: 
+      □ eg. magnetic optical etc
+    □ Full Backup
+    □ incremental backup:
+      □ last backup time
+      □ last modify time
+    
+    □ Recover lost file or disk by restoring data from backup
+    
+  Log-structured file system
+    □ Log structured (or journaling) file systems record each update to the file system as a transaction
+    □ All transactions are written to a log
+      □ A transaction is considered committed once it is written to the log
+      □ however, the file system may not yet be updated
+    □ the transactions in the log are asynchronously written to the file system
+      □ when the file system is modified, transaction is removed from the log.
+    □ If the file system crashes, all remaining transactions in the log must still be performed.
+      □ file system retains consistency
+      
+  SunOS NFS
+    □ An implementation and a specification of a software system for accesssing remote files across LANs
+    □ Access remote file system
+      □ A remote directory is mounted over a local file system directory
+        □ the mounted directory looks like an integral subtree of the local filesystem.
+      □ Specification of the remote directory for the mount operation is nontransparent; the host name of
+        the remote directory must be provided.
+        □ files in the remote directory can be accessed transparently.
+    □ independance is achieved through the use of RPC/XDR protocols used between to implementation-independent
+      interfaces.
+      
+    □ Mount Protocol:
+      □ Establishes intial logical connection between server and client
+      □ Mount operation includes name of remote directory to be mounted and name of server machine storing it
+        □ Request is mapped to corresonding RPC and forwarded to mount server running on server machine
+        □ Export list, specifies local file systems that server exports for mounting, along with names of
+          machines permitted to mount them
+      □ Server returns a file handle - key for further accesses
+      □ file handle - a file-system identifier, and an inode number to identify the mounted dir within the 
+        exported file system
+      □ only changes client side. server side is unchanged
