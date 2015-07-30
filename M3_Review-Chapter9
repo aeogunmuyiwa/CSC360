@@ -93,8 +93,142 @@ Slides: Virtual Memory
     \-> Also, allows several processes to map the same file allowing the pages in memory to be shared.
 
 Slides: Replacement
-
+  Page Replacement:
+   \-> used when over-allocation of memory occurs. multiple processes try to load all there pages but the exists a limited
+        amount of space.
+   
+  Basic Page Replacement:
+    \-> If no frame is free, we find on that is not currently being used and free it.
+    \-> we can free a frame by writing its contents to swap space adn changing the apge table (and all other tables) to 
+        indicate that the page is no longer in memory.
+    \-> the newly freed frame can now be used to hold the page for which the process faulted.
+    \-> we modify the page-fault service routine to include page replacement
+    
+    Procedure:
+      1) Find the location of the desired page on the disk.
+      2) find a free frame:
+        a) if there is a free frame use it
+        b) if there is non free frame, use a page-replacement algorithm to select a victim frame
+          □ NOTICE: twp page transfers are required (out/in)
+        c) write the victim frame to the disk; change the page and frame tables accordingly
+      3) Read the desired page into the newly freed frame; change the page and frame tables
+      4) continue the user process from where the apge fault occured.
+      
+    \-> reduce overhead by using a modify bit (or dirty bit)
+      □ if present page has been modified need to write it to disk else no need to.
+    
+    \-> reduces the fault rate
+      □ number of frames increases thus the number of faults decreases.
   
-
+  FIFO Page Replacement:
+    \-> associated the time a page was brought into memory. 
+    \-> when a page needs to be replaced the oldest page is chosen. (can use a queue to hold page table order)
+    \-> performance not always good.
+    
+    Belady's Anomaly:
+      \-> some page-replacement algorithms, the page-fault rate may increase as the number of allocated frames increases.
+      
+  Optimal Page-Replacement:
+    \-> Replace page that will not be used for the longest period of time
+      □ lowest page-faut rate of all alorithms
+      □ never suffers from Belady's Anomaly
+    \-> guarantees the lowest possible page-fault reate for a fixed number of frames
   
+  Least Recently Used Algoritm:
+    \-> replace the least recently used. 
+    can be implemented with 2 ways:
+      1) Counter:
+          □ simplest associate each page-table entry a time of use field and add to the CPU a logical clock or counter. 
+          □ clock is incremented for every memory reference. Whenever a reference to a page is made, the contents of the
+            clock register are copied to the time of use field in the apge table entry for that page.
+          □ search for smallest time value and replace.
+      2) Stack:
+          □ Keep a stack of page numbers. 
+          □ when a page is referenced it is removed from the stack and placed on the top. thus the least recently used is on
+            the bottom of the stack.
+            
+    \-> does not suffer from Belady's Anomaly.
+    
+  LRU-Approximation Page Replacement:
+    \-> Most systems do not provide sufficient hardware support for true LRU page replacement.
+    \-> counter:
+      □ number of references
+    \-> Replace the one with the smallest counter.
+      □ aging necessary
+    \-> Most Frequently used  (MFU)
+      □ new page has smaller counter and might be referenced soon
+
+Slides: Page Allocation
+  
+  Page Buffering:
+    □ Keep a pool of free pages.
+      □ speed up swapping in desired pages
+      □ no need to wait for a page to become "free"
+    □ Keep a list of modified pages
+      □ synch with disk when pagin is idle
+      □ reduce overhead whe swapping out.
+
+  Page Allocation:
+    □ 2 major allocation schemes:
+      
+      fixed allocation:
+        □ equal allocation:
+          □ M free pages
+          □ N requesting processes
+          □ Allocation: floor(M/N) each
+            □ some processes may requet less than M/N
+          □ EG. if there are 93 frames and 5 processes each process gets 18 frames.
+            □ leftover frames can be used as free-frame buffer pool
+        □ Proportional Allocation:
+          □ each process requests s_i: all request S=sum s_i
+          □ Allocation: s_i/S*M
+      
+      priority allocation:
+        □ allocates available memory to each process according to its size. 
+    
+        □ Allocation proportional to priority
+          □ higher priority process gets more pages allocated when necessary
+        □ on page fault
+          □ select for replacement one of its frames.
+          □ select for replacement a frame from a process with lower priority number.
+    □ if multiprogramming level is increased each process will lose some frames to provide the memory needed for the
+      new process. The opposite goes for the other hand. multiprogamming decreases -> frames increase.
+  
+  Global versus Local Replacement:
+    Global replacement:
+      □ allows a process to select a replacement frame from the set of all frames, even if that frame is currently 
+        allocated to some other process; that is, one process can take a frame from another.
+        
+    Local Replacement:
+      □ requires that each process select from only its own set of allocated frames.
+      
+      
+  Thrashing:
+    □ More time on paging than executing
+      □ busy I/O, idle CPU
+      □ more process admitted, more page faults
+      □ more processes in thrashing!
+    
+    □ limit the effects of thrashingby using local replacement algorithm or priority replacement algorithm 
+    □ local replacement thrashing:
+      □ if one process starts thrashing, it cannot steal frames from another process and cause the latter to thrash
+        as well
+    □ if thrashing, processes wil be in the queue for the apging device most of the time. The average service time for 
+      a page fault will increase because of the longer average queue for paging device. 
+      □ effective access time will incerase even for a process that is not thrashing
+   
+    □ Prevent thrashing:
+      □ must provide a process with as many frames as it needs. 
+      □ many methods to determine number of needed frames. 
+      □ local replacement
+      □ sufficient provisioning 
+      
+      □ working-set model:
+        □ working-set window:
+          □ most recent page references.  
+        □ window-set size:
+          □ number of unique page references.
+          □ if a page is in active use it will be in the working set. else it wont be
+          
+         if sum WSSi>M reduce multiprogramming 
         
