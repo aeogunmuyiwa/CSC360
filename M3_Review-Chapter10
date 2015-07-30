@@ -46,3 +46,28 @@ Slide: Mass Storage
     
     □ Look scheduling:
       □ looks for closest request and proceeds to it.
+
+  Disk Management
+    □  Physical formatting
+      □  creating physical sector structures
+        □  Physical Formatting:
+          □  before disk can store data, it must be divided into sectors that the disk controller can read and write.
+        □  Before it can use the disk to hold files, the OS needs to record its own data structures on the disk. 
+          1) Partition disk into one or more groups of cylinders.
+          2) Logical formatting
+            □  creation of a file system.
+  
+  Swap-Space management:
+    □  Swap space
+      □  disk space as an extension on main memory
+    □  Swap-space location:
+      □  a regular big file
+      □  swap partition
+    □  Swap-space management
+      □  text vs Data segment
+      □  proactive vs reactive allocation
+      
+  Raid 
+    □  is a data storage virtualization technology taht combines multiple physical disk drive components into a single
+       logical unit for the purposes of data redundancy, performance improvement or both.
+       
