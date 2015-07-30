@@ -1,0 +1,14 @@
+# CSC360
+Operating Systems
+
+Midterm #3 review.
+
+Virtual Memory - Chapter 9
+
+Virtual memory
+  \-> involves the separation of logical memory as perceived by users from physical memory.
+  \-> Benefits:
+    ❑ program would no longer be constrained by the amount of physical memory that is 
+        available. Users would be able to write programs fro extremely large vertual addres 
+        space, simplifuing the programming task.
+    ❑   
