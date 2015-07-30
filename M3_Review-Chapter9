@@ -5,10 +5,30 @@ Midterm #3 review.
 
 Virtual Memory - Chapter 9
 
-Virtual memory
+Virtual memory:
   \-> involves the separation of logical memory as perceived by users from physical memory.
   \-> Benefits:
-    ❑ program would no longer be constrained by the amount of physical memory that is 
-        available. Users would be able to write programs fro extremely large vertual addres 
-        space, simplifuing the programming task.
-    ❑   
+    □ program would no longer be constrained by the amount of physical memory that is 
+      available. Users would be able to write programs fro extremely large vertual addres 
+      space, simplifuing the programming task.
+    □ Because each user program could take less physical memory, more programs could be run at the same time, with
+      corresponding increase in CPU utilization and throughput but with no increase in response time or turnaround time
+    □ Less I/O would be needed to load or swap user programs into memory, so each user program would run faster
+    □ benefiticial for both system and user
+    □ faster swap in/out
+    
+  \-> virtual memory asslows files and memory to be shared by two or more processes through page sharing.
+
+Virtual Address Space:11
+  \-> refers to the logical (or virtual) view of how a process is stored in memory
+    □ typically, this view is that a process begins at a certain logical address and exists in contiguous memory
+  \-> address spaces that include holes are know as sparse address spaces.
+    □ benificial because the holes can be filled as the stack or heap segments grow or if we wish to dynamically link 
+      libraries during execution time
+      
+Demand Paging:
+  \-> only load pages as they are needed during execution.
+  \-> pages that are never accessed are never loaded into physical memory
+  
+
+
