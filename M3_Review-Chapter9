@@ -5,30 +5,96 @@ Midterm #3 review.
 
 Virtual Memory - Chapter 9
 
-Virtual memory:
-  \-> involves the separation of logical memory as perceived by users from physical memory.
-  \-> Benefits:
-    □ program would no longer be constrained by the amount of physical memory that is 
-      available. Users would be able to write programs fro extremely large vertual addres 
-      space, simplifuing the programming task.
-    □ Because each user program could take less physical memory, more programs could be run at the same time, with
-      corresponding increase in CPU utilization and throughput but with no increase in response time or turnaround time
-    □ Less I/O would be needed to load or swap user programs into memory, so each user program would run faster
-    □ benefiticial for both system and user
-    □ faster swap in/out
-    
-  \-> virtual memory asslows files and memory to be shared by two or more processes through page sharing.
+Slides: Virtual Memory
 
-Virtual Address Space:11
-  \-> refers to the logical (or virtual) view of how a process is stored in memory
-    □ typically, this view is that a process begins at a certain logical address and exists in contiguous memory
-  \-> address spaces that include holes are know as sparse address spaces.
-    □ benificial because the holes can be filled as the stack or heap segments grow or if we wish to dynamically link 
-      libraries during execution time
+  Virtual memory:
+    \-> involves the separation of logical memory as perceived by users from physical memory.
+    \-> Benefits:
+      □ program would no longer be constrained by the amount of physical memory that is 
+        available. Users would be able to write programs fro extremely large vertual addres 
+        space, simplifuing the programming task.
+      □ Because each user program could take less physical memory, more programs could be run at the same time, with
+        corresponding increase in CPU utilization and throughput but with no increase in response time or turnaround time
+      □ Less I/O would be needed to load or swap user programs into memory, so each user program would run faster
+      □ benefiticial for both system and user
+      □ faster swap in/out
       
-Demand Paging:
-  \-> only load pages as they are needed during execution.
-  \-> pages that are never accessed are never loaded into physical memory
+    \-> virtual memory asslows files and memory to be shared by two or more processes through page sharing.
+  
+  Virtual Address Space:11
+    \-> refers to the logical (or virtual) view of how a process is stored in memory
+      □ typically, this view is that a process begins at a certain logical address and exists in contiguous memory
+    \-> address spaces that include holes are know as sparse address spaces.
+      □ benificial because the holes can be filled as the stack or heap segments grow or if we wish to dynamically link 
+        libraries during execution time
+        
+  Demand Paging:
+    \-> only load pages as they are needed during execution.
+    \-> pages that are never accessed are never loaded into physical memory
+    
+    Lazy Pager:
+      \-> never swaps page into memory unless it is going to be used. 
+    
+    valid/invalid bit:
+      \-> used to determine whether a corresponding page is legal and in memory.
+      Invalid:
+        □ The page either is not valid (that is not in the logical address space of the process) or is valid but is currently
+          on the disk. 
+      Valid bit:
+        □ The associated page is both legal and in memory
+        
+    Page Faults:
+      \-> process tries to access a page that was not brought into memory. (invalid bit is true)
+      
+      \-> steps to handle a page fault:
+        1) We check and internal table (usually kept with the proess control block) for this process to determine whether the
+           reference was a vaild or an invalid memory access
+        2) If the reference was invalid, we terminate the process. if it was valid but we have not yet brought that page, we 
+           now page it in
+        3) We find a free frame (by taking on from the free-frame list, for example)
+        4) we schedule a disk operation to read the desired page into the newly allocated frame
+        5) When the disk read is complete, we modify the internal table kept with the process and the page table to indicate
+           that the page is now in memory 
+        6) We restart the instruction that was interrupted by the trap. The process can now access the page as though it and
+          always been in memory.
+        
+    Pure demand paging:
+      \-> never bring a page into memory until its needed. 
+      \-> brings in a page only when a page fault occurs. eventually will have all needed pages in memory thus no more faults.
+      
+    Hardware:
+      \-> page table:
+        □ this table has the ability to mark an entry invalid through a valid-invalid bit or a special value of protection bits
+      \-> secondary memory:
+        □ This memory holds those pages that are not present in main memory. The secondary memory is usually a high-speed disk.
+          it is known as the swap device, and the section of disk used for this purpose is known as swap space.
+      
+  Paging Performance:
+    \-> Page fault Rate 0 <= p <= 1.0
+      □ if p = 0 then no page faults
+      □ if p = 1 then all references result in a fault
+      □ increase in page-fault rate -> effective access time increases therfore dramatically slowing down process execution 
+        time
+    \-> Effective Access Time = (1-p) x memory access + p x (pagefault time + swap page out + swap page in + restart overhead)
+    
+    \-> page fault causes the following sequence to occur
+    
+  Copy-on-write:
+    \-> works by allowing the aprent and child proecsses initially to share the same pages.
+    \-> These shared pages are marked as copy-on-write pages. Meaing if either process writes to a shared page, a copy of
+        the shared page is created. 
+    
+  Memory Mapped Files:
+    \-> memory-mapped file I/O allows file I/O to be treated as routine memory access by mapping a disk block to a page in
+        memory.
+    \-> A file is initially read using demand paging. A page-sized portion of the file is read from the file system into
+        the physical page. subsequent reads/writes to/from the file are trearted as ordinary memory accesses.
+    \-> Simplifies file access by treating file I/O through memory rather than read() write() system calls
+    \-> Also, allows several processes to map the same file allowing the pages in memory to be shared.
+
+Slides: Replacement
+
   
 
-
+  
+        
