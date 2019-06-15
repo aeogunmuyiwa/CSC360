@@ -5,11 +5,13 @@ Midterm #1 review.
 
 Introduction - Chapter 1
 
+123
+
 What is OS?
-  \-> "special" program run directly on computer hardware. 
-  \-> Supports multiple other programs 
+  \-> "special" program run directly on computer hardware.
+  \-> Supports multiple other programs
     \-> Eg. Shell, compiler, assembler, etc.
-  
+
 OS: between hardware and other software
   \-> present a virtual machine to other software
     \-> hides hardware details, extends hardware features.
@@ -17,7 +19,7 @@ OS: between hardware and other software
   \-> provides controlled access to hardware
     \-> restrict hardware access, manage hardware resources
     \-> hardware--
-    
+
 How do we use OS?
   \-> through OS interfaces
 
@@ -27,7 +29,7 @@ Why do we need OS?
   \-> Share and Separate
     \-> share between devices, programs, computers, users
     \-> protect one from all others.
-  \-> Protects the operating system from errant users and errant users from one another. 
+  \-> Protects the operating system from errant users and errant users from one another.
         \-> designates machine instructions that can cause harm as privileged instruction
         \-> the hardware only allows these privileged instructions to be executed in kernel mode only.
 
@@ -40,11 +42,11 @@ registers (inside cpu)
         \->magnetic disk
           \-> optical disk
             \-> magenetic tapes (backups)
-            
+
 Interrupts:
 
   \-> Asynchronous operation
-  
+
   \-> Types:
     \-> Nonmaskable interrupts
       \-> eg. hardware fault
@@ -53,13 +55,13 @@ Interrupts:
       \-> interrupt controller: priority and arbitration
     \-> Software interrupts
       \-> trap, system calls.
-  
+
 Handling Interrupts:
   \-> Save current State
   \-> update program counter
   \-> execute interrupt routine
   \-> restore previous state
-  
+
 Computer Architectures:
 
   \-> Single-Processor Systems
@@ -67,13 +69,13 @@ Computer Architectures:
   \-> Cluster Systems
   \-> Distributed Systems
   \-> Grid Systems
-  
+
 History:
   \-> (1) Uniprogramming
     \-> "One program at a time"
   \-> (2) Multiprogramming
     \-> "Many programs at a time"
-    
+
 Processing:
 
   Batched:
@@ -81,18 +83,18 @@ Processing:
     \-> Execute one job UNTIL it is blocked
     \-> Then pick another one to execute
   Time Sharing:
-    \-> Execute one job up to a certain time (time intervals are usually really small. therfore user can interact 
+    \-> Execute one job up to a certain time (time intervals are usually really small. therfore user can interact
                                               with any program running)
     \-> Then Switch to another job
     \-> Seems to execute MANY jobs at the same time
-    
+
   Batch vs time sharing
     \-> better job responsiveness
     \-> switching overhead
-    
+
 Operating System Modes:
 
-  User Mode: 
+  User Mode:
     \-> mode bit = 1
     \-> executes tasks from user. Eg. user processes
     \-> user has control of computer
@@ -102,20 +104,20 @@ Operating System Modes:
     \-> executes system calls
     \-> operating system has control of computer
     \-> has complete and unrestricted access to computer hardware
-    
+
 Process Management:
 
   A process needs resources:
     \-> CPU Time
     \-> memory files
     \-> I/O Devices
-  
+
   Single Thread Process:
     \-> has one program counter that specifes next instruction to execute
-    
+
   MultiThreading process:
     \-> has multiple program counters each pointing to the next instruction to execute
-    
+
   OS is responsible for:
     \-> Scheduling processes and threads on the CPU's
     \-> Creating and deleting both user and system processes
@@ -128,40 +130,40 @@ Memory Management:
   Main memory
     \-> store instructions for execution
     \-> store data for processing
-  
+
   OS keeps track of available memory
     \-> Allocates and reclaims memory
       \-> Provide protected access
       \-> trap invalid access
-  
+
   OS will swap in/out (virtual) memory
-  
+
 Storage and I/O Management:
 
   \-> Everything is a file in UNIX
-  
+
   OS is responsible for:
     \-> Creating and deleting files
     \-> Supporting primitives for manipulating files and directories
     \-> Creating and deleting directories to organize files
     \-> Mapping files onto secondary storage
     \-> Backing up files on stable (nonvolatile) storage media
-  
+
 Specialized OS:
 
   Real-Time Systems:
-    
+
     HARD real-time OS
       \-> is purely deterministic and time constraint system
-      \-> execution deadlines have to be met eg. 10 second deadline the process must be completed at 
+      \-> execution deadlines have to be met eg. 10 second deadline the process must be completed at
           the 10th second not the 11th or the 9th
     SOFT real-time OS
-      \-> meeting execution deadlines is not compulsory  for every task. But the process should be processd and 
-          give a result. 
-      \-> But deadlines should not be missed. 
-      
+      \-> meeting execution deadlines is not compulsory  for every task. But the process should be processd and
+          give a result.
+      \-> But deadlines should not be missed.
+
   Handheld Systems:
     \-> almost a full-blown OS, with resource constraints
-    
+
   Embedded Systems:
     \-> Very severe reswource constraints
